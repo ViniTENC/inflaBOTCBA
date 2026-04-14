@@ -1,0 +1,182 @@
+[
+  {
+    "id": "pan",
+    "nombre": "Pan (6.75 kg)",
+    "termino_busqueda": "Pan lactal blanco 500 g",
+    "multiplicador": 13.5
+  },
+  {
+    "id": "galletitas-agua",
+    "nombre": "Galletitas de agua (420 g)",
+    "termino_busqueda": "Galletitas de agua 100 g",
+    "multiplicador": 4.2
+  },
+  {
+    "id": "galletitas-dulces",
+    "nombre": "Galletitas dulces (210 g)",
+    "termino_busqueda": "Galletitas surtidas 400 g",
+    "multiplicador": 0.525
+  },
+  {
+    "id": "arroz",
+    "nombre": "Arroz (1.2 kg)",
+    "termino_busqueda": "Arroz largo fino 1 kg",
+    "multiplicador": 1.2
+  },
+  {
+    "id": "harina-trigo",
+    "nombre": "Harina de trigo (1.08 kg)",
+    "termino_busqueda": "Harina 000 1 kg",
+    "multiplicador": 1.08
+  },
+  {
+    "id": "otras-harinas",
+    "nombre": "Otras harinas - Maíz (210 g)",
+    "termino_busqueda": "Harina de maiz polenta 500 g",
+    "multiplicador": 0.42
+  },
+  {
+    "id": "fideos",
+    "nombre": "Fideos (1.74 kg)",
+    "termino_busqueda": "Fideos tallarines 500 g",
+    "multiplicador": 3.48
+  },
+  {
+    "id": "papa",
+    "nombre": "Papa (6.51 kg)",
+    "termino_busqueda": "Papa blanca kg",
+    "multiplicador": 6.51
+  },
+  {
+    "id": "batata",
+    "nombre": "Batata (510 g)",
+    "termino_busqueda": "Batata kg",
+    "multiplicador": 0.51
+  },
+  {
+    "id": "azucar",
+    "nombre": "Azúcar (1.23 kg)",
+    "termino_busqueda": "Azucar comun 1 kg",
+    "multiplicador": 1.23
+  },
+  {
+    "id": "dulces",
+    "nombre": "Dulces (330 g)",
+    "termino_busqueda": "Dulce de batata 500 g",
+    "multiplicador": 0.66
+  },
+  {
+    "id": "legumbres",
+    "nombre": "Legumbres secas (240 g)",
+    "termino_busqueda": "Lentejas 500 g",
+    "multiplicador": 0.48
+  },
+  {
+    "id": "hortalizas",
+    "nombre": "Hortalizas (5.73 kg)",
+    "termino_busqueda": "Tomate perita kg",
+    "multiplicador": 5.73
+  },
+  {
+    "id": "frutas",
+    "nombre": "Frutas (4.95 kg)",
+    "termino_busqueda": "Manzana roja kg",
+    "multiplicador": 4.95
+  },
+  {
+    "id": "carnes",
+    "nombre": "Carnes (6.27 kg)",
+    "termino_busqueda": "Carne picada comun kg",
+    "multiplicador": 6.27
+  },
+  {
+    "id": "menudencias",
+    "nombre": "Menudencias (270 g)",
+    "termino_busqueda": "Higado kg",
+    "multiplicador": 0.27
+  },
+  {
+    "id": "fiambres",
+    "nombre": "Fiambres (60 g)",
+    "termino_busqueda": "Paleta feteada 200 g",
+    "multiplicador": 0.3
+  },
+  {
+    "id": "huevos",
+    "nombre": "Huevos (600 g)",
+    "termino_busqueda": "Huevos color x 12 un",
+    "multiplicador": 1.0
+  },
+  {
+    "id": "leche",
+    "nombre": "Leche (9.27 kg/L)",
+    "termino_busqueda": "Leche entera sachet 1 lt",
+    "multiplicador": 9.27
+  },
+  {
+    "id": "queso",
+    "nombre": "Queso (330 g)",
+    "termino_busqueda": "Queso crema 300 g",
+    "multiplicador": 1.1
+  },
+  {
+    "id": "yogur",
+    "nombre": "Yogur (570 g)",
+    "termino_busqueda": "Yogur entero sachet 1 lt",
+    "multiplicador": 0.57
+  },
+  {
+    "id": "manteca",
+    "nombre": "Manteca (60 g)",
+    "termino_busqueda": "Manteca 200 g",
+    "multiplicador": 0.3
+  },
+  {
+    "id": "aceite",
+    "nombre": "Aceite (1.2 kg)",
+    "termino_busqueda": "Aceite girasol 900 ml",
+    "multiplicador": 1.44
+  },
+  {
+    "id": "bebidas-no-alcoholicas",
+    "nombre": "Beb. no alcohólicas (3.45 L)",
+    "termino_busqueda": "Gaseosa cola 1.5 lts",
+    "multiplicador": 2.3
+  },
+  {
+    "id": "bebidas-alcoholicas",
+    "nombre": "Beb. alcohólicas (1.08 L)",
+    "termino_busqueda": "Cerveza rubia 1 lt",
+    "multiplicador": 1.08
+  },
+  {
+    "id": "sal",
+    "nombre": "Sal fina (120 g)",
+    "termino_busqueda": "Sal fina 500 g",
+    "multiplicador": 0.24
+  },
+  {
+    "id": "condimentos",
+    "nombre": "Condimentos (120 g)",
+    "termino_busqueda": "Mayonesa 500 g",
+    "multiplicador": 0.24
+  },
+  {
+    "id": "vinagre",
+    "nombre": "Vinagre (60 g)",
+    "termino_busqueda": "Vinagre de alcohol 1 lt",
+    "multiplicador": 0.06
+  },
+  {
+    "id": "cafe",
+    "nombre": "Café (30 g)",
+    "termino_busqueda": "Cafe molido 500 g",
+    "multiplicador": 0.06
+  },
+  {
+    "id": "yerba",
+    "nombre": "Yerba (510 g)",
+    "termino_busqueda": "Yerba mate 500 g",
+    "multiplicador": 1.02
+  }
+]

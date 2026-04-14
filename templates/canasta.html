@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inflación CBA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #141414;
+      --surface2: #1c1c1c;
+      --border: #2a2a2a;
+      --accent: #e8ff47;
+      --accent2: #47ffd4;
+      --red: #ff4747;
+      --warn: #ffb347;
+      --text: #e8e8e8;
+      --muted: #666;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'Space Grotesk', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      height: 56px;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    .logo {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--accent); }
+
+    main {
+      flex: 1;
+      padding: 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 32px;
+    }
+
+    /* ── Panel Central (Dashboard) ── */
+    .dashboard {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    h2 { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+    
+    .chart-container {
+      width: 100%;
+      height: 300px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th { color: var(--muted); font-weight: 400; font-size: 13px; }
+    td.price { font-family: var(--mono); color: var(--accent2); }
+    .cheapest { color: var(--accent) !important; font-weight: 600; }
+    .muted { color: var(--muted) !important; }
+
+    /* ── Sidebar (Controles y Logs) ── */
+    aside {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .start-btn {
+      width: 100%;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .start-btn:hover:not(:disabled) { opacity: .85; }
+    .start-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+    .logs {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 300px;
+    }
+
+    .logs-header {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .logs-container {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .log-line {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+    }
+    .log-line.info { color: var(--text); }
+    .log-line.warn { color: var(--warn); }
+    .log-line.error { color: var(--red); }
+    .log-line.success { color: var(--accent2); }
+
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Inflación<span>CBA</span></div>
+</header>
+
+<main>
+  <div class="dashboard">
+    <div class="card">
+      <h2>Evolución de la Canasta Básica</h2>
+      <div class="chart-container">
+        <canvas id="historyChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Precios actuales (Último escaneo: <span id="lastScanDate" class="muted">-</span>)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Coto</th>
+            <th>Carrefour</th>
+            <th>Jumbo</th>
+          </tr>
+        </thead>
+        <tbody id="pricesTable">
+          <tr><td colspan="4" class="muted">Cargando datos...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <aside>
+    <div class="card" style="padding:16px;">
+      <button class="start-btn" id="scrapeBtn" onclick="iniciarScraping()">
+        🔍 Actualizar Precios Ahora
+      </button>
+      <p style="font-size:12px;color:var(--muted);margin-top:12px;text-align:center;">
+        Este proceso demora varios minutos en buscar los productos en los 3 supermercados.
+      </p>
+    </div>
+
+    <div class="logs">
+      <div class="logs-header">Scraping Logs</div>
+      <div class="logs-container" id="logsContainer">
+      </div>
+    </div>
+  </aside>
+</main>
+
+<script>
+  const socket = io();
+  let mySocketId = null;
+  let chart = null;
+
+  socket.on("connect", () => { mySocketId = socket.id; });
+
+  socket.on("canasta_log", ({ msg, level }) => {
+    addLog(msg, level);
+  });
+
+  socket.on("canasta_done", () => {
+    document.getElementById("scrapeBtn").disabled = false;
+    document.getElementById("scrapeBtn").textContent = "🔍 Actualizar Precios Ahora";
+    cargarDashboard();
+  });
+
+  function addLog(msg, level) {
+    const div = document.createElement("div");
+    div.className = `log-line ${level}`;
+    div.textContent = msg;
+    const container = document.getElementById("logsContainer");
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  async function iniciarScraping() {
+    const btn = document.getElementById("scrapeBtn");
+    btn.disabled = true;
+    btn.textContent = "⏱ Scraping en progreso...";
+    
+    document.getElementById("logsContainer").innerHTML = "";
+    addLog("Iniciando scraping de Coto, Carrefour y Jumbo...", "info");
+
+    try {
+      await fetch("/api/canasta/scrape", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sid: mySocketId }),
+      });
+    } catch (e) {
+      addLog("Error de conexión al iniciar." ,"error");
+      btn.disabled = false;
+      btn.textContent = "🔍 Actualizar Precios Ahora";
+    }
+  }
+
+  async function cargarDashboard() {
+    try {
+      const [ultimoRes, historialRes] = await Promise.all([
+        fetch("/api/canasta/ultimo"),
+        fetch("/api/canasta/historial")
+      ]);
+      const ultimo = await ultimoRes.json();
+      const historial = await historialRes.json();
+
+      renderUltimo(ultimo);
+      renderHistorial(historial);
+    } catch (e) {
+      console.error("Error cargando dashboard:", e);
+    }
+  }
+
+  function renderUltimo(data) {
+    if (!data || !data.id) {
+      document.getElementById("pricesTable").innerHTML = `<tr><td colspan="4" class="muted">Aún no hay datos de scraping.</td></tr>`;
+      return;
+    }
+
+    document.getElementById("lastScanDate").textContent = data.fecha;
+
+    // Agrupar precios por producto y supermercado
+    const preciosPorProd = {};
+    data.precios.forEach(p => {
+      if (!preciosPorProd[p.producto_id]) preciosPorProd[p.producto_id] = { Coto: null, Carrefour: null, Jumbo: null, nombres: {} };
+      preciosPorProd[p.producto_id][p.supermercado] = p.precio;
+      preciosPorProd[p.producto_id].nombres[p.supermercado] = p.descripcion;
+    });
+
+    const tbody = document.getElementById("pricesTable");
+    tbody.innerHTML = "";
+
+    // Para obtener el nombre base del producto lo pedimos
+    fetch("/api/canasta/productos")
+      .then(res => res.json())
+      .then(productos => {
+        let totales = { Coto: 0, Carrefour: 0, Jumbo: 0 };
+
+        productos.forEach(prod => {
+          const dict = preciosPorProd[prod.id] || { Coto: null, Carrefour: null, Jumbo: null, nombres: {} };
+          
+          let html = `<tr><td><strong>${prod.nombre}</strong></td>`;
+          const supers = ["Coto", "Carrefour", "Jumbo"];
+          
+          // Calcular el más barato
+          let min = Infinity;
+          let supersMin = [];
+          
+          supers.forEach(s => {
+            if (dict[s] && dict[s] < min) { min = dict[s]; supersMin = [s]; }
+            else if (dict[s] === min) { supersMin.push(s); }
+          });
+
+          supers.forEach(s => {
+            if (dict[s]) {
+              totales[s] += dict[s];
+              const isMin = supersMin.includes(s) ? 'cheapest' : '';
+              html += `<td class="price ${isMin}" title="${dict.nombres[s]}">$${dict[s].toLocaleString("es-AR", {minimumFractionDigits: 2})}</td>`;
+            } else {
+              html += `<td class="muted">-</td>`;
+            }
+          });
+          html += `</tr>`;
+          tbody.innerHTML += html;
+        });
+
+        // Fila de totales
+        let minTotal = Infinity;
+        let supersMinTotal = [];
+        ["Coto", "Carrefour", "Jumbo"].forEach(s => {
+            if (totales[s] > 0 && totales[s] < minTotal) { minTotal = totales[s]; supersMinTotal = [s]; }
+        });
+
+        let totalesHtml = `<tr><td><strong>TOTAL CANASTA</strong></td>`;
+        ["Coto", "Carrefour", "Jumbo"].forEach(s => {
+            const isMin = supersMinTotal.includes(s) ? 'cheapest' : '';
+            totalesHtml += `<td class="price ${isMin}" style="font-size:16px;"><strong>$${totales[s].toLocaleString("es-AR", {minimumFractionDigits: 2})}</strong></td>`;
+        });
+        totalesHtml += `</tr>`;
+        tbody.innerHTML += totalesHtml;
+      });
+  }
+
+  function renderHistorial(data) {
+    const dates = Object.keys(data);
+    const cotoData = dates.map(d => data[d]["Coto"] || null);
+    const carrefourData = dates.map(d => data[d]["Carrefour"] || null);
+    const jumboData = dates.map(d => data[d]["Jumbo"] || null);
+
+    const ctx = document.getElementById('historyChart').getContext('2d');
+    
+    if (chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [
+                {
+                    label: 'Coto',
+                    data: cotoData,
+                    borderColor: '#e8ff47',
+                    backgroundColor: 'rgba(232, 255, 71, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: 'Carrefour',
+                    data: carrefourData,
+                    borderColor: '#47ffd4',
+                    backgroundColor: 'rgba(71, 255, 212, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: 'Jumbo',
+                    data: jumboData,
+                    borderColor: '#ff4747',
+                    backgroundColor: 'rgba(255, 71, 71, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: '#e8e8e8', font: { family: 'Space Grotesk' } } }
+            },
+            scales: {
+                y: {
+                    grid: { color: '#2a2a2a' },
+                    ticks: { color: '#666', font: { family: 'IBM Plex Mono' } }
+                },
+                x: {
+                    grid: { color: '#2a2a2a' },
+                    ticks: { color: '#666', font: { family: 'IBM Plex Mono' } }
+                }
+            }
+        }
+    });
+  }
+
+  // Init
+  cargarDashboard();
+</script>
+</body>
+</html>
