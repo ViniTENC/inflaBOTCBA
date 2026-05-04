@@ -77,4 +77,4 @@ def api_canasta_scrape():
     return jsonify({"ok": True})
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True, host="127.0.0.1", port=8080)
+    socketio.run(app, debug=True, host="127.0.0.1", port=8080, allow_unsafe_werkzeug=True)
