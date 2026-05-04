@@ -2,7 +2,7 @@
 
 Este proyecto es un **Dashboard Comparador de Precios y Scraper** diseñado para monitorear mensualmente el costo exacto de la Canasta Básica Alimentaria (CBA) de Argentina, tal como la define el INDEC. 
 
-Compara automáticamente los precios entre los principales supermercados del país (**Coto, Carrefour y Jumbo**) ajustando matemáticamente cada precio a las cantidades en gramos/litros requeridas por las normativas oficiales para medir el índice de inflación real en góndola.
+Compara automáticamente los precios entre los principales supermercados del país (**Carrefour y Jumbo**) ajustando matemáticamente cada precio a las cantidades en gramos/litros requeridas por las normativas oficiales para medir el índice de inflación real en góndola.
 
 ---
 
@@ -10,7 +10,6 @@ Compara automáticamente los precios entre los principales supermercados del pa�
 
 * **Scraping Multi-Supermercado en Vivo:**
   - **Carrefour y Jumbo:** Escaneo instantáneo y silencioso mediante sus APIs internas (VTEX) paginadas.
-  - **Coto Digital:** Evasión avanzada de seguridad militar (FortiGuard + reCAPTCHA Enterprise) mediante el uso de "Reciclaje de Pestañas" de Playwright en modo iterativo visualmente persistente (`headless=False`).
 * **Matemática INDEC Estricta:** Gracias al archivo `canasta_basica.json`, no suma "1 pan". Multiplica algorítmicamente el precio de mercado para cumplir la cuota mensual exacta de 6.75 kg de pan, y así con los 30 rubros de la lista oficial.
 * **Dashboard Histórico:** Interfaz gráfica web estéticamente agradable con gráficos interactivos (`Chart.js`) para ver cómo evoluciona la inflación a lo largo de los meses.
 * **Persistencia Local:** Los resultados de cada mes guardan un Snapshot histórico inmutable en una base de datos local rápida (`precios.db` vía SQLite).
@@ -21,9 +20,7 @@ Compara automáticamente los precios entre los principales supermercados del pa�
 
 * **Backend:** Python + Flask (Servidor Web) + SQLite (Base de datos).
 * **Concurrencia y Log en Vivo:** `Flask-SocketIO` y `Threading` para retransmitir los logs de scraping azules directamente al navegador en tiempo real.
-* **Scraping:** 
-  - `Requests` (Para VTEX público).
-  - `Playwright` (Simulación de navegador Chromium para evadir los WAF de Coto Digital integrando retro-compatibilidad Angular SPA y HTML Clásico).
+* **Scraping:** `Requests` (Para VTEX público).
 * **Frontend:** HTML5 + CSS Vanilla (Sleek UI) + Chart.js.
 
 ---

@@ -188,13 +188,12 @@
         <thead>
           <tr>
             <th>Producto</th>
-            <th>Coto</th>
             <th>Carrefour</th>
             <th>Jumbo</th>
           </tr>
         </thead>
         <tbody id="pricesTable">
-          <tr><td colspan="4" class="muted">Cargando datos...</td></tr>
+          <tr><td colspan="3" class="muted">Cargando datos...</td></tr>
         </tbody>
       </table>
     </div>
@@ -250,7 +249,7 @@
     btn.textContent = "⏱ Scraping en progreso...";
     
     document.getElementById("logsContainer").innerHTML = "";
-    addLog("Iniciando scraping de Coto, Carrefour y Jumbo...", "info");
+    addLog("Iniciando scraping de Carrefour y Jumbo...", "info");
 
     try {
       await fetch("/api/canasta/scrape", {
@@ -283,7 +282,7 @@
 
   function renderUltimo(data) {
     if (!data || !data.id) {
-      document.getElementById("pricesTable").innerHTML = `<tr><td colspan="4" class="muted">Aún no hay datos de scraping.</td></tr>`;
+      document.getElementById("pricesTable").innerHTML = `<tr><td colspan="3" class="muted">Aún no hay datos de scraping.</td></tr>`;
       return;
     }
 
@@ -292,7 +291,7 @@
     // Agrupar precios por producto y supermercado
     const preciosPorProd = {};
     data.precios.forEach(p => {
-      if (!preciosPorProd[p.producto_id]) preciosPorProd[p.producto_id] = { Coto: null, Carrefour: null, Jumbo: null, nombres: {} };
+      if (!preciosPorProd[p.producto_id]) preciosPorProd[p.producto_id] = { Carrefour: null, Jumbo: null, nombres: {} };
       preciosPorProd[p.producto_id][p.supermercado] = p.precio;
       preciosPorProd[p.producto_id].nombres[p.supermercado] = p.descripcion;
     });
@@ -304,13 +303,13 @@
     fetch("/api/canasta/productos")
       .then(res => res.json())
       .then(productos => {
-        let totales = { Coto: 0, Carrefour: 0, Jumbo: 0 };
+        let totales = { Carrefour: 0, Jumbo: 0 };
 
         productos.forEach(prod => {
-          const dict = preciosPorProd[prod.id] || { Coto: null, Carrefour: null, Jumbo: null, nombres: {} };
-          
+          const dict = preciosPorProd[prod.id] || { Carrefour: null, Jumbo: null, nombres: {} };
+
           let html = `<tr><td><strong>${prod.nombre}</strong></td>`;
-          const supers = ["Coto", "Carrefour", "Jumbo"];
+          const supers = ["Carrefour", "Jumbo"];
           
           // Calcular el más barato
           let min = Infinity;
@@ -337,12 +336,12 @@
         // Fila de totales
         let minTotal = Infinity;
         let supersMinTotal = [];
-        ["Coto", "Carrefour", "Jumbo"].forEach(s => {
+        ["Carrefour", "Jumbo"].forEach(s => {
             if (totales[s] > 0 && totales[s] < minTotal) { minTotal = totales[s]; supersMinTotal = [s]; }
         });
 
         let totalesHtml = `<tr><td><strong>TOTAL CANASTA</strong></td>`;
-        ["Coto", "Carrefour", "Jumbo"].forEach(s => {
+        ["Carrefour", "Jumbo"].forEach(s => {
             const isMin = supersMinTotal.includes(s) ? 'cheapest' : '';
             totalesHtml += `<td class="price ${isMin}" style="font-size:16px;"><strong>$${totales[s].toLocaleString("es-AR", {minimumFractionDigits: 2})}</strong></td>`;
         });
@@ -353,7 +352,6 @@
 
   function renderHistorial(data) {
     const dates = Object.keys(data);
-    const cotoData = dates.map(d => data[d]["Coto"] || null);
     const carrefourData = dates.map(d => data[d]["Carrefour"] || null);
     const jumboData = dates.map(d => data[d]["Jumbo"] || null);
 
@@ -366,14 +364,6 @@
         data: {
             labels: dates,
             datasets: [
-                {
-                    label: 'Coto',
-                    data: cotoData,
-                    borderColor: '#e8ff47',
-                    backgroundColor: 'rgba(232, 255, 71, 0.1)',
-                    tension: 0.3,
-                    fill: true
-                },
                 {
                     label: 'Carrefour',
                     data: carrefourData,

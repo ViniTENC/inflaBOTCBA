@@ -46,16 +46,6 @@ def cargar_productos_canasta():
         return json.load(f)
 
 def guardar_snapshot(resultados):
-    """
-    resultados: list of dicts with:
-    {
-       "supermercado": "Coto",
-       "producto_id": "leche-entera",
-       "precio": 1200.5,
-       "descripcion": "Leche Entera La Serenísima 1L",
-       "url": "..."
-    }
-    """
     conn = get_db()
     c = conn.cursor()
     hoy = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
