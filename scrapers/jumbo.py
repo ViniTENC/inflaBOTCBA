@@ -24,7 +24,6 @@ class JumboScraper(BaseScraper):
                 data = resp.json()
                 if data and len(data) > 0:
                     item = data[0]
-                    # VTEX structure
                     try:
                         nombre = item["productName"]
                         link = item["link"]

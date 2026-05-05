@@ -17,7 +17,6 @@ class CarrefourScraper(BaseScraper):
     def scrape_product(self, product_id, termino_busqueda, playwright_context=None):
         query = urllib.parse.quote(termino_busqueda)
         url = f"{self.api_url}?ft={query}"
-        
         try:
             resp = requests.get(url, headers=self.headers, timeout=10)
             if resp.status_code in (200, 206):
